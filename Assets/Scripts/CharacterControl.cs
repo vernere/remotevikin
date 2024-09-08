@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterControl : MonoBehaviour
 {
@@ -15,6 +16,14 @@ public class CharacterControl : MonoBehaviour
     public float groundCheckRadius;
     public LayerMask groundCheckLayer;
     public bool isGrounded;
+
+    public Image filler;
+    public float health;
+    public float previousHealth;
+    public float maxHealth;
+
+    public float counter;
+    public float maxCounter;
 
 
     // Start is called before the first frame update
@@ -68,5 +77,81 @@ public class CharacterControl : MonoBehaviour
 
         }
 
+        if(counter > maxCounter)
+        {
+
+            previousHealth = health;
+            counter = 0;
+
+        }
+        else
+        {
+
+            counter += Time.deltaTime;
+
+        }
+
+        filler.fillAmount = Mathf.Lerp(previousHealth / maxHealth, health / maxHealth, counter / maxCounter);
+
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        
+        if(collision.gameObject.CompareTag("Trap"))
+        {
+
+            Debug.Log("Trap");
+            TakeDamage(10);
+
+        }
+
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("AddHealth"))
+        {
+            Destroy(collision.gameObject);
+            Heal(20);
+        }
+        if (collision.gameObject.CompareTag("AddMaxHealth"))
+        {
+            Destroy(collision.gameObject);
+            AddMaxHealth(50);
+        }
+    }
+
+
+    void AddMaxHealth(float amt)
+    {
+
+        maxHealth += amt;
+
+    }
+
+    void Heal(float amt)
+    {
+
+        previousHealth = filler.fillAmount * maxHealth;
+        counter = 0;
+        health += amt;
+        if(health > maxHealth)
+        {
+
+            health = maxHealth;
+
+        }
+
+    }
+
+    void TakeDamage(float dmg)
+    {
+
+        previousHealth = filler.fillAmount * maxHealth;
+        counter = 0;
+        health -= dmg;
+
+    }
+
 }
