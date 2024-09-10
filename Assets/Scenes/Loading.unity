@@ -148,6 +148,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8353d052548e44bab6dd90e4b5f7a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentLevel: 
+  health: 200
+  previousHealth: 200
+  maxHealth: 200
+  Level1: 0
+  Level2: 0
+  Level3: 0
 --- !u!4 &202420201
 Transform:
   m_ObjectHideFlags: 0

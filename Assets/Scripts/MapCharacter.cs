@@ -6,14 +6,19 @@ public class MapCharacter : MonoBehaviour
 {
 
     public float speed;
-    public LoadLevel level;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
 
-        GameObject trigger = GameObject.Find("LevelTrigger");
-        level = trigger.GetComponent<LoadLevel>();
+        if (GameManager.manager.currentLevel != "")
+        {
+            GameObject.Find(GameManager.manager.currentLevel).GetComponent<LoadLevel>().Cleared(true);
+
+            transform.position = GameObject.Find(GameManager.manager.currentLevel).transform.GetChild(1).transform.position;
+
+
+        }
 
     }
 
@@ -32,8 +37,10 @@ public class MapCharacter : MonoBehaviour
         
         if (collision.gameObject.CompareTag("LevelTrigger")) 
         {
-           
-            SceneManager.LoadScene(level.LevelToLoad);
+
+            GameManager.manager.currentLevel = collision.gameObject.name;
+
+            SceneManager.LoadScene(collision.gameObject.GetComponent<LoadLevel>().LevelToLoad);
 
         }
 

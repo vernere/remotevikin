@@ -12,4 +12,25 @@ public class MenuControl : MonoBehaviour
         SceneManager.LoadScene("Map");
 
     }
+
+
+    public void Save()
+    {
+
+        Debug.Log("Save pressed");
+        GameManager.manager.Save();
+
+    }
+
+
+    public void Load()
+    {
+
+        Debug.Log("Load pressed");
+        GameManager.manager.Load();
+
+    }
+
+
+
 }

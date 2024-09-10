@@ -8,12 +8,29 @@ public class LoadLevel : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        LevelToLoad = "Level1";
+
+        if (GameManager.manager.GetType().GetField(LevelToLoad).GetValue(GameManager.manager).ToString() == "True") 
+        {
+        
+            Cleared(true);
+
+        }
+
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void Cleared(bool isClear)
     {
-        
+
+        if (isClear)
+        {
+
+            GameManager.manager.GetType().GetField(LevelToLoad).SetValue(GameManager.manager, true);
+
+            transform.GetChild(0).gameObject.GetComponent<Renderer>().enabled = true;
+            GetComponent<CircleCollider2D>().enabled = false;
+
+        }
     }
 }
+    

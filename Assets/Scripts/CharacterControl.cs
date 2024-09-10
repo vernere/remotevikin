@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CharacterControl : MonoBehaviour
 {
@@ -18,9 +19,7 @@ public class CharacterControl : MonoBehaviour
     public bool isGrounded;
 
     public Image filler;
-    public float health;
-    public float previousHealth;
-    public float maxHealth;
+ 
 
     public float counter;
     public float maxCounter;
@@ -80,7 +79,7 @@ public class CharacterControl : MonoBehaviour
         if(counter > maxCounter)
         {
 
-            previousHealth = health;
+            GameManager.manager.previousHealth = GameManager.manager.health;
             counter = 0;
 
         }
@@ -91,9 +90,11 @@ public class CharacterControl : MonoBehaviour
 
         }
 
-        filler.fillAmount = Mathf.Lerp(previousHealth / maxHealth, health / maxHealth, counter / maxCounter);
+        filler.fillAmount = Mathf.Lerp(GameManager.manager.previousHealth / GameManager.manager.maxHealth, GameManager.manager.health / GameManager.manager.maxHealth, counter / maxCounter);
 
     }
+
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -120,26 +121,32 @@ public class CharacterControl : MonoBehaviour
             Destroy(collision.gameObject);
             AddMaxHealth(50);
         }
+        if (collision.CompareTag("LevelEnd"))
+        {
+
+            SceneManager.LoadScene("Map");
+
+        }
     }
 
 
     void AddMaxHealth(float amt)
     {
 
-        maxHealth += amt;
+        GameManager.manager.maxHealth += amt;
 
     }
 
     void Heal(float amt)
     {
 
-        previousHealth = filler.fillAmount * maxHealth;
+        GameManager.manager.previousHealth = filler.fillAmount * GameManager.manager.maxHealth;
         counter = 0;
-        health += amt;
-        if(health > maxHealth)
+        GameManager.manager.health += amt;
+        if(GameManager.manager.health > GameManager.manager.maxHealth)
         {
 
-            health = maxHealth;
+            GameManager.manager.health = GameManager.manager.maxHealth;
 
         }
 
@@ -148,9 +155,9 @@ public class CharacterControl : MonoBehaviour
     void TakeDamage(float dmg)
     {
 
-        previousHealth = filler.fillAmount * maxHealth;
+        GameManager.manager.previousHealth = filler.fillAmount * GameManager.manager.maxHealth;
         counter = 0;
-        health -= dmg;
+        GameManager.manager.health -= dmg;
 
     }
 
