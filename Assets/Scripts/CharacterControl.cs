@@ -24,6 +24,16 @@ public class CharacterControl : MonoBehaviour
     public float counter;
     public float maxCounter;
 
+    public Transform interactionCheckPosition;
+    public float interactionCheckRadius;
+    public LayerMask interactionLayer;
+
+    public float healingRate = 5f;
+
+    public GameObject Axe;
+    public Transform throwPoint;
+    public float throwForce;
+    public float throwAngle;
 
     // Start is called before the first frame update
     void Start()
@@ -76,7 +86,24 @@ public class CharacterControl : MonoBehaviour
 
         }
 
-        if(counter > maxCounter)
+
+        if(Input.GetKey(KeyCode.F)&& Physics2D.OverlapCircle(interactionCheckPosition.position, interactionCheckRadius,interactionLayer))
+        {
+
+            Debug.Log("use");
+            HealOverTime(healingRate * Time.deltaTime);
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            Axe.GetComponent<Rigidbody2D>().isKinematic = false;
+            ThrowAxe();
+            animator.SetTrigger("throw");
+            Axe.GetComponent<Rigidbody2D>().isKinematic = true;
+        }
+
+        if (counter > maxCounter)
         {
 
             GameManager.manager.previousHealth = GameManager.manager.health;
@@ -152,7 +179,19 @@ public class CharacterControl : MonoBehaviour
 
     }
 
-    void TakeDamage(float dmg)
+    void HealOverTime(float amt)
+    {
+
+        GameManager.manager.health += amt;
+        if (GameManager.manager.health > GameManager.manager.maxHealth)
+        {
+
+            GameManager.manager.health = GameManager.manager.maxHealth;
+
+        }
+    }
+
+        void TakeDamage(float dmg)
     {
 
         GameManager.manager.previousHealth = filler.fillAmount * GameManager.manager.maxHealth;
@@ -161,4 +200,17 @@ public class CharacterControl : MonoBehaviour
 
     }
 
+    void ThrowAxe()
+    {
+
+        GameObject throwable = Instantiate(Axe, throwPoint.position, throwPoint.rotation);
+
+        float angleInRadians = throwAngle * Mathf.Deg2Rad;
+        Vector2 throwDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
+
+        Rigidbody2D rb = throwable.GetComponent<Rigidbody2D>();
+        rb.velocity = throwDirection * throwForce;
+    }
+
 }
+
